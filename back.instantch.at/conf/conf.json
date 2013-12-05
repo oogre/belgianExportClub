@@ -1,0 +1,18 @@
+{
+	"named":"leclubdesexportateurs",
+	"description":"HACKATHLON, AWEX, CONTEST, instantch.at",
+	"version":"0.1",
+	"ACCESS":{
+		"DB":{
+			"host":"localhost",
+			"user":"zend",
+			"password":"vince123",
+			"db":"instantch.at"
+		}
+	},
+	"PHP":{
+		"SETTINGS":{
+			"display_errors":1
+		}
+	}
+}
