@@ -1,0 +1,25 @@
+/Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/bin/HelloCordova.ap_ \
+ : /Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/res/drawable/icon.png \
+/Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/res/drawable-hdpi/icon.png \
+/Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/res/drawable-ldpi/icon.png \
+/Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/res/drawable-mdpi/icon.png \
+/Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/res/drawable-xhdpi/icon.png \
+/Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/res/values/strings.xml \
+/Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/res/xml/config.xml \
+/Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/bin/res/drawable/icon.png \
+/Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/bin/res/drawable-hdpi/icon.png \
+/Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/bin/res/drawable-ldpi/icon.png \
+/Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/bin/res/drawable-mdpi/icon.png \
+/Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/bin/res/drawable-xhdpi/icon.png \
+/Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/assets/www \
+/Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/assets/www/config.xml \
+/Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/assets/www/cordova.js \
+/Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/assets/www/cordova_plugins.js \
+/Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/assets/www/css \
+/Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/assets/www/img \
+/Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/assets/www/index.html \
+/Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/assets/www/js \
+/Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/assets/www/css/index.css \
+/Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/assets/www/img/logo.png \
+/Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/assets/www/js/index.js \
+/Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/bin/AndroidManifest.xml \
