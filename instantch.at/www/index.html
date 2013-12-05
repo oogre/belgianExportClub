@@ -45,12 +45,44 @@
     </head>
     <body>
         <div view='loader' class="container">
+            
+  
+
         </div>
 
         <div view='signup' class="container">
+            <form role="form">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Email address</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputFirstname">Firstname</label>
+                    <input type="text" class="form-control" id="exampleInputFirstname" placeholder="Enter Firstname">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputLastname">Lastname</label>
+                    <input type="text" class="form-control" id="exampleInputLastname" placeholder="Enter Lastname">
+                </div>
+
+                <div class="radio">
+                  <label>
+                    <input type="radio" name="optionsRadios" id="optionsRadios1" value="1" checked>
+                    Male
+                  </label>
+                </div>
+                <div class="radio">
+                  <label>
+                    <input type="radio" name="optionsRadios" id="optionsRadios2" value="0">
+                        Female
+                  </label>
+                </div>
+                  <button type="submit" class="btn btn-default">Submit</button>
+                </form>
         </div>
 
         <div view='research' class="container">
+            <button class="btn btn-primary" type="submit">Recherche</button>
         </div>
 
         <div view='listcompany' class="container">
