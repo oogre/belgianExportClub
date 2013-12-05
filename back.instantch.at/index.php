@@ -28,48 +28,23 @@
 				$SQL .= ' LEFT JOIN tags ON tag_company.tag_id = tags.id ';
 				$SQL .= ' WHERE LOWER(tags.name) IN ('.strtolower('"'.implode('","', explode(',', $request['tag'])).'"').')';
 			}
-		break;
-	}
-
-
-	$SQL = '';
-
-	switch ($action) 
-	{
-		case 'get':
-			$SQL .= ' SELECT * ';
-		break;
-	}
-
-	switch ($table) 
-	{
-		case 'companies':
-		case 'tags':
-		case 'users':
-		case 'users':
-		case 'chats':
-			$SQL .= ' FROM '.$table;
-		break;
-	}
-
-	
-	foreach ($request as $key => $value)
-	{
-
-		$value = strtolower('"'.implode('","', explode(',', $value)).'"');
-	
-		switch ($key) {
-		case 'tag':
-		case 'tags':
-			if('companies' === $table)
+			if(!empty($request['id']))
 			{
-				$SQL .= ' LEFT JOIN tag_company ON tag_company.company_id = companies.id ';
-				$SQL .= ' LEFT JOIN tags ON tag_company.tag_id = tags.id ';
-				$SQL .= ' WHERE LOWER(tags.name) IN ('.$value.')';/**/
+				$SQL .= ' WHERE companies.id IN ('.$request['id'].')';
 			}
 		break;
-		}/**/
-	}print_r(requestDB($conf['ACCESS']['DB'] ,$SQL));
+		case 'getusers': 
+			$SQL = 	' SELECT * '.
+					' FROM users ';
+			if(!empty($request['phonenumber']))
+			{
+				$SQL .= ' WHERE LOWER(users.phonenumber) IN ('.strtolower('"'.implode('","', explode(',', $request['phonenumber'])).'"').')';
+			}
+		break;
+	}
 
+	echo json_encode(array(
+		'status'	=> 'ok', 
+		'data'		=> requestDB($conf['ACCESS']['DB'] ,$SQL)));
 /**/
 ?>

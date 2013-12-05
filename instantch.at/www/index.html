@@ -31,12 +31,13 @@
         
          <link href="css/bootstrap.css" rel="stylesheet">
         <script type="text/javascript">
-        var AT = null;
+            var AT = null;
             $(document).ready(function(){
+                window.debug = "undefined" == typeof(cordova);
                 app.initialize();
                 AT = new INSTANTCHAT();
                 AT.ready(function(){
-                    alert(JSON.stringify(AT.getCurentUser()));    
+                    
                 });
             });
         </script>
@@ -44,11 +45,10 @@
     </head>
     <body>
         <div class="container">
-        <h1>INSTANTCH.AT</h1>
-        
-        <script type="text/javascript" src="cordova.js"></script>
-        <script type="text/javascript" charset="utf-8" src="js/libs/telephonenumber.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
-</div>
+            <h1>INSTANTCH.AT</h1>
+            <script type="text/javascript" src="cordova.js"></script>
+            <script type="text/javascript" charset="utf-8" src="js/libs/telephonenumber.js"></script>
+            <script type="text/javascript" src="js/index.js"></script>
+        </div>
     </body>
 </html>
