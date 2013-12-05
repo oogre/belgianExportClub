@@ -1,4 +1,43 @@
 window.INSTANTCHAT = function(){
+	var conf = {
+		back : 'http://back.instantch.at'
+	}
+	var _current_view = document.querySelector('')
+	var _goto = function(view){
+		document.querySelector('#'+view)
+	}
+
+	var tool = {
+		xhr : function(url, data){
+			var _request = data;
+			console.log('SHOW LOADER');
+			return $.ajax({
+				url: url,
+				type: 'GET',
+				data: data,
+				dataType: 'JSON'
+			})
+			.always(function(){
+				console.log('HIDE LOADER');
+			})
+			.pipe(function(data, textStatus, jqXHR) {
+				if(!data || data.status != 'ok' || 0 == data.data.length) {
+					var deferred = $.Deferred(); 
+					deferred.reject( {	data : data, request : _request } ); 	
+					return deferred; 
+				}else{
+					var deferred = $.Deferred(); 
+					deferred.resolve( data.data ); 
+					return deferred; 
+				}
+			}, function(){
+				var deferred = $.Deferred(); 
+				deferred.reject(); 
+				return deferred;
+			});
+		}
+	}
+
 	var permanentStorage = {
 		addItem : function(object){
 			var o = JSON.parse(window.localStorage.getItem("INSTANTCHAT")) || {};
@@ -76,13 +115,29 @@ window.INSTANTCHAT = function(){
 		return deferred.promise();
 	};
 
-	var _ready = $.when(_phonenumber(), _getLocalisation()).done(function(phonenumber, address){
-		permanentStorage.addItem({
-			user : {
-				address : address,
-				phonenumber : phonenumber
-			}
-		});
+
+
+
+	var _ready = $.when(
+			_phonenumber().done(function(phonenumber){
+				tool.xhr(conf.back+'/users/get', {phonenumber : phonenumber} )
+				.done(function(data){
+					console.log('SAVE USER');
+				})
+				.fail(function(){
+					console.log('GO SIGNUP');
+				})
+			}),
+
+			_getLocalisation()
+
+		).done(function(phonenumber, address){
+			permanentStorage.addItem({
+				user : {
+					address : address,
+					phonenumber : phonenumber
+				}
+			});
 	});
 
 	return {
@@ -93,6 +148,10 @@ window.INSTANTCHAT = function(){
 			_ready.done(fnc);
 			return this;
 		},
+		goto : function(view){
+			return _goto(view);
+		},
+		conf : conf,
 		permanentStorage : permanentStorage
 	}
 	
