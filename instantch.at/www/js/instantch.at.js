@@ -1,10 +1,21 @@
+NodeList.prototype.map = function(fnc){
+	Array.prototype.slice.call(this).map(fnc);
+}
+
 window.INSTANTCHAT = function(){
 	var conf = {
 		back : 'http://back.instantch.at'
 	}
-	var _current_view = document.querySelector('')
+
+	var _current_view = document.querySelector('[view]');
+	document.querySelectorAll('[view]:not(:first-child)').map(function(view){
+		view.style.display = 'none';
+	});
+
 	var _goto = function(view){
-		document.querySelector('#'+view)
+		_current_view.style.display = 'none';
+		_current_view = document.querySelector('[view='+view+']');
+		_current_view.style.display = 'block';		
 	}
 
 	var tool = {
