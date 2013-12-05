@@ -1,4 +1,65 @@
+NodeList.prototype.map = function(fnc){
+	Array.prototype.slice.call(this).map(fnc);
+}
+
 window.INSTANTCHAT = function(){
+	var conf = {
+		back : 'http://back.instantch.at'
+	}
+
+	var _current_view = document.querySelector('[view]');
+	document.querySelectorAll('[view]:not(:first-child)').map(function(view){
+		view.style.display = 'none';
+	});
+
+	var _loader = {
+		view : document.querySelector('[view=loader]'),
+		show : function(){
+			_loader.view.style.position = 'absolute';
+			_loader.view.style.display = 'block';
+
+		},
+		hide : function(){
+			_loader.view.style.display = 'none';
+		}
+	}
+
+	var _goto = function(view){
+		_current_view.style.display = 'none';
+		_current_view = document.querySelector('[view='+view+']');
+		_current_view.style.display = 'block';		
+	}
+
+	var tool = {
+		xhr : function(url, data){
+			var _request = data;
+			return $.ajax({
+				url: url,
+				type: 'GET',
+				data: data,
+				dataType: 'JSON'
+			})
+			.always(function(){
+				_loader.hide();
+			})
+			.pipe(function(data, textStatus, jqXHR) {
+				if(!data || data.status != 'ok' || 0 == data.data.length) {
+					var deferred = $.Deferred(); 
+					deferred.reject( {	data : data, request : _request } ); 	
+					return deferred; 
+				}else{
+					var deferred = $.Deferred(); 
+					deferred.resolve( data.data ); 
+					return deferred; 
+				}
+			}, function(){
+				var deferred = $.Deferred(); 
+				deferred.reject(); 
+				return deferred;
+			});
+		}
+	}
+
 	var permanentStorage = {
 		addItem : function(object){
 			var o = JSON.parse(window.localStorage.getItem("INSTANTCHAT")) || {};
@@ -7,31 +68,43 @@ window.INSTANTCHAT = function(){
 			return newObject;
 		},
 		getItem : function(){
-			return window.localStorage.getItem("INSTANTCHAT");
+			return JSON.parse(window.localStorage.getItem("INSTANTCHAT"));
+		},
+		isset : function(path){
+			path = path.split('.');
+			var object = window.localStorage.getItem("INSTANTCHAT");
+			for (var i = path.length - 1; i >= 0; i--) {
+				if(undefined !== object[path]){
+					object = object[path]
+				}
+				else{
+					return true;
+				}
+				return false;
+			};
 		},
 		clear : function(){
 			window.localStorage.clear("INSTANTCHAT");
 		}
 	};
-	permanentStorage.clear()
-	permanentStorage.addItem({
-		user : {
-			phonenumber : false,
-			address : false
-		}
-	});
-
+	
 	var _phonenumber = function(){
 		var deferred = $.Deferred();
-		cordova.require("cordova/plugin/telephonenumber").get(function(result){
-			deferred.resolve();
-			alert(result);
-			permanentStorage.addItem({
-				user : {
-					phonenumber : result
-				}
+		if(window.debug){
+			deferred.resolve('+32495876315');
+		}
+		else if(permanentStorage.isset('user.phonenumber')){
+			deferred.resolve(permanentStorage.get().user.phonenumber);
+		}
+		else{
+			cordova.require("cordova/plugin/telephonenumber").get(function(result){
+				deferred.resolve({
+					user : {
+						phonenumber : result
+					}
+				});
 			});
-		});
+		}
 		return deferred.promise();
 	};
 
@@ -43,21 +116,51 @@ window.INSTANTCHAT = function(){
 				latLng : new google.maps.LatLng(position.coords.latitude,position.coords.longitude)
 			}
 			geocoder && geocoder.geocode(latLng, function (results, status) {
-				if (status == google.maps.GeocoderStatus.OK) {
-					permanentStorage.addItem({
+				if (status == google.maps.GeocoderStatus.OK){
+					deferred.resolve({
 						user : {
 							address : results[0].formatted_address
 						}
 					});
-					deferred.resolve();
 				}
 			});
 		};
-		navigator.geolocation.getCurrentPosition(onSuccess, function(){});
+		if(window.debug){
+			deferred.resolve('rue Mandevile 23, 4000 Liège Belgique');
+		}
+		else if(permanentStorage.isset('user.address')){
+			deferred.resolve(permanentStorage.get().user.address);
+		}
+		else{
+			navigator.geolocation.getCurrentPosition(onSuccess, function(){});
+		}
 		return deferred.promise();
 	};
 
-	var _ready = $.when(_phonenumber(), _getLocalisation());
+
+
+
+	var _ready = $.when(
+			_phonenumber().done(function(phonenumber){
+				tool.xhr(conf.back+'/users/get', {phonenumber : phonenumber} )
+				.done(function(data){
+					console.log('SAVE USER');
+				})
+				.fail(function(){
+					_goto('signup');
+				})
+			}),
+
+			_getLocalisation()
+
+		).done(function(phonenumber, address){
+			permanentStorage.addItem({
+				user : {
+					address : address,
+					phonenumber : phonenumber
+				}
+			});
+	});
 
 	return {
 		getCurentUser : function(){
@@ -66,7 +169,12 @@ window.INSTANTCHAT = function(){
 		ready : function(fnc){
 			_ready.done(fnc);
 			return this;
-		}
+		},
+		goto : function(view){
+			return _goto(view);
+		},
+		conf : conf,
+		permanentStorage : permanentStorage
 	}
 	
 };

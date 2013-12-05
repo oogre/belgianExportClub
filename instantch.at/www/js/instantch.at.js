@@ -12,6 +12,18 @@ window.INSTANTCHAT = function(){
 		view.style.display = 'none';
 	});
 
+	var _loader = {
+		view : document.querySelector('[view=loader]'),
+		show : function(){
+			_loader.view.style.position = 'absolute';
+			_loader.view.style.display = 'block';
+
+		},
+		hide : function(){
+			_loader.view.style.display = 'none';
+		}
+	}
+
 	var _goto = function(view){
 		_current_view.style.display = 'none';
 		_current_view = document.querySelector('[view='+view+']');
@@ -21,7 +33,6 @@ window.INSTANTCHAT = function(){
 	var tool = {
 		xhr : function(url, data){
 			var _request = data;
-			console.log('SHOW LOADER');
 			return $.ajax({
 				url: url,
 				type: 'GET',
@@ -29,7 +40,7 @@ window.INSTANTCHAT = function(){
 				dataType: 'JSON'
 			})
 			.always(function(){
-				console.log('HIDE LOADER');
+				_loader.hide();
 			})
 			.pipe(function(data, textStatus, jqXHR) {
 				if(!data || data.status != 'ok' || 0 == data.data.length) {
@@ -136,7 +147,7 @@ window.INSTANTCHAT = function(){
 					console.log('SAVE USER');
 				})
 				.fail(function(){
-					console.log('GO SIGNUP');
+					_goto('signup');
 				})
 			}),
 

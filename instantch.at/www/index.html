@@ -24,12 +24,14 @@
         <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
         <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <link rel="stylesheet" type="text/css" href="css/instantch.at.css" />
         
         <script type="text/javascript" charset="utf-8" src="js/libs/google/maps.js"></script>
         <script type="text/javascript" charset="utf-8" src="js/libs/jquery.js"></script>
         <script type="text/javascript" charset="utf-8" src="js/instantch.at.js"></script>
+
         
-         <link href="css/bootstrap.css" rel="stylesheet">
+        <link href="css/bootstrap.css" rel="stylesheet">
         <script type="text/javascript">
             var AT = null;
             $(document).ready(function(){
@@ -37,7 +39,7 @@
                 app.initialize();
                 AT = new INSTANTCHAT();
                 AT.ready(function(){
-                    
+                    alert('bonjour')
                 });
             });
         </script>
@@ -45,9 +47,7 @@
     </head>
     <body>
         <div view='loader' class="container">
-            
-  
-
+            <h1>loader</h1>
         </div>
 
         <div view='signup' class="container">
@@ -86,18 +86,23 @@
         </div>
 
         <div view='listcompany' class="container">
+            <h1>listcompany</h1>
         </div>
 
         <div view='detailcompany' class="container">
+            <h1>detailcompany</h1>
         </div>
 
         <div view='listuser' class="container">
+            <h1>listuser</h1>
         </div>
 
-        <div view='detailuser' class="container">
+        <div view='listuser' class="container">
+            <h1>listuser</h1>
         </div>
 
         <div view='chat' class="container">
+            <h1>chat</h1>
         </div>
 
         <script type="text/javascript" src="cordova.js"></script>
