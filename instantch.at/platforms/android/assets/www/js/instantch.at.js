@@ -32,7 +32,6 @@ window.INSTANTCHAT = function(){
 	var listener = {
 		deferred : $.Deferred().resolve(),
 		signup : function(deferred){
-			
 			document.querySelector('[view=signup] form').onsubmit = function(event){
 				_getUserSignup(deferred, event.target);
 				return false;
@@ -40,7 +39,10 @@ window.INSTANTCHAT = function(){
 		},
 		listtag : function(deferred){
 			_getTags(deferred);
-		}
+		},
+		listcompany : function(deferred){
+			_getCompany(deferred);
+		},
 	}
 
 	var _go = {
@@ -195,6 +197,44 @@ window.INSTANTCHAT = function(){
 		console.log(tag_ids);
 	};
 
+	var _getCompany = function(deferred){
+		// FIXME TAGID
+		tool.xhr(conf.back+'/get/companies').done(function(companies){
+			var table = _go.current.querySelector('table tbody');
+			companies.sort(function(a,b){
+				return a.name.localeCompare(b.name);
+			}).map(function(company){
+				console.log(company);
+				var company = $('	<tr company_id="'+company.id+'">'+
+								'				<td>'+company.name+'</td>'+
+								'				<td>'+
+								'					<button type="button" class="btn btn-primary btn-lg">Chat</button>'+
+								'				</td>					'+
+								'				</tr> ')[0];
+
+				table.appendChild(company);
+				company.querySelector('.btn-primary').onclick = function(event){
+					var COMPANY = event.target.parentNode.parentNode;
+					var interest = [];
+					interest.push(COMPANY.querySelector('[company_id]').getAttribute('company_id'));
+					table.querySelectorAll('.selected [company_id]').map(function(company){
+						interest.push(company.getAttribute('company_id'));
+					});
+					_setUserTagInterest(interest);
+
+					permanentStorage.addItem({
+						company : {
+							interest : interest,
+						}
+					});
+				};
+				company.onclick = function(event){
+					event.target.parentNode.classList.toggle('selected')
+				}
+			});
+		});
+	};
+
 	var _getTags = function(deferred){
 		var selectedTag = [];
 		tool.xhr(conf.back+'/get/tags', {
@@ -213,21 +253,28 @@ window.INSTANTCHAT = function(){
 				table.appendChild(tag);
 
 				tag.querySelector('.btn-success').onclick = function(event){
-					var company = event.target.parentNode.parentNode;
+					var TAG = event.target.parentNode.parentNode;
 					var interest = [];
-					interest.push(company.querySelector('[tag_id]').getAttribute('tag_id'));
+					interest.push(TAG.querySelector('[tag_id]').getAttribute('tag_id'));
 					table.querySelectorAll('.selected:not(.not) [tag_id]').map(function(tag){
 						interest.push(tag.getAttribute('tag_id'));
 					});
 					_setUserTagInterest(interest);
-					deferred.resolve(company)
+
+					permanentStorage.addItem({
+						tag : {
+							interest : interest,
+						}
+					});
+
+					deferred.resolve(interest);
 					return false;
 				};
 
 				tag.querySelector('.btn-warning').onclick = function(event){
-					var company = event.target.parentNode.parentNode;
-					_setUserTagDisinterest(company);
-					table.removeChild(company);
+					var TAG = event.target.parentNode.parentNode;
+					_setUserTagDisinterest(TAG);
+					table.removeChild(TAG);
 					return false;
 				};
 				tag.onclick = function(event){
@@ -244,21 +291,15 @@ window.INSTANTCHAT = function(){
 					}
 				}
 			});
-
-			deferred.fail(function(view){
-				var selected = view.querySelectorAll('table tbody .selected:not(.not) [tag_id]').map(function(tag){
-					console.log(tag);
-					return tag.getAttribute('tag_id');
-				});
-				var disselected = view.querySelectorAll('table tbody .not.selected [tag_id]').map(function(tag){
-					console.log(tag);
-					return tag.getAttribute('tag_id');
-				});;
-				console.log(selected);
-				console.log(disselected);
-			});
 		});
 	};
+
+	var _listtagDone = function(){
+		_go.to('listcompany');
+	}
+	var _listtagFail = function(view){
+		_go.to('listcompany');
+	}
 
 	var _ready = $.when(
 			_phonenumber().done(function(phonenumber){
@@ -267,17 +308,13 @@ window.INSTANTCHAT = function(){
 					permanentStorage.addItem({
 						user : data[0]
 					});
-					_go.to('listtag').done(function(){
-						_go.to('listcompany');
-					});
+					_go.to('listtag').done(_listtagDone);
 				})
 				.fail(function(){
 					_go.to('signup').done(function(user){
 						permanentStorage.addItem(user);
 						tool.xhr(conf.back+'/set/users', permanentStorage.getItem().user).done(function(){
-							_go.to('listtag').done(function(){
-								_go.to('listcompany')
-							});
+							_go.to('listtag').done(_listtagDone);
 						}).fail(function(data){
 							alert(data)
 						})

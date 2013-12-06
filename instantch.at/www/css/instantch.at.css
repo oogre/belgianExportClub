@@ -48,7 +48,8 @@ body#instantch_at{
 #instantch_at table .btn {
 	display : none;
 }
-#instantch_at table .selected:not(.not) .btn-success {
+#instantch_at table .selected:not(.not) .btn-success,
+#instantch_at table .selected .btn-primary {
 	display : block;
 }
 #instantch_at table .not.selected .btn-warning {

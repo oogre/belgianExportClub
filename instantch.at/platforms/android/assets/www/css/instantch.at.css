@@ -48,7 +48,8 @@ body#instantch_at{
 #instantch_at table .btn {
 	display : none;
 }
-#instantch_at table .selected:not(.not) .btn-success {
+#instantch_at table .selected:not(.not) .btn-success,
+#instantch_at table .selected .btn-primary {
 	display : block;
 }
 #instantch_at table .not.selected .btn-warning {
@@ -78,18 +79,17 @@ body#instantch_at{
     margin-left: 0px;
 }
 
-#instantch_at .footer{
-	
-	font-size: 40px;
-    
+#instantch_at .panel-footer{
+	width:100%;
+	height:90px;
+	position:absolute;
+	bottom:0;
+	left:0;
+	background:;
+	z-index: 11;
 }
-
-#instantch_at .box{
-	
-	width: auto;
-	height: 76px;
-
-    
+#instantch_at .footer{
+	font-size: 40px;
 }
 #instantch_at .h1{
 	
@@ -101,4 +101,43 @@ body#instantch_at{
 #instantch_at .table-striped > tbody > tr:nth-child(odd) > td, 
 #instantch_at .table-striped > tbody > tr:nth-child(odd) > th{
 	background-color: rgba(183,197,202 , 0.2)
+}
+
+#instantch_at .radio label  {
+	
+	display: inline-block;  
+    cursor: pointer;  
+    position: relative;  
+    padding-left: 25px;  
+    margin-right: 15px;  
+    font-size: 30px;
+    line-height: 18px;
+    
+}
+
+#instantch_at textarea.form-control{
+	font-size: 40px;
+	height: 300px;
+	width: 700px;
+	  
+    left: 15%;
+    right: 15%;
+    
+}
+
+#instantch_at .form-control {
+	font-size: 30px;
+}
+
+
+#instantch_at .navbar-left {
+	bottom:0;
+	left:15%;
+	position:absolute;
+	z-index: 12;
+}
+
+
+#instantch_at .btn {
+	vertical-align: 0px;
 }
