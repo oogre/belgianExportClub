@@ -18,7 +18,7 @@
 	$request = $_REQUEST;
 
 	$SQL = '';
-	switch ($model.$action) {
+	switch ($action.$model) {
 		case 'getcompanies': 
 			$SQL = 	' SELECT * '.
 					' FROM companies ';
@@ -38,13 +38,25 @@
 					' FROM users ';
 			if(!empty($request['phonenumber']))
 			{
-				$SQL .= ' WHERE LOWER(users.phonenumber) IN ('.strtolower('"'.implode('","', explode(',', $request['phonenumber'])).'"').')';
+				$SQL .= ' WHERE LOWER(users.phonenumber) LIKE '.strtolower('"%'.$request['phonenumber'].'%"');
 			}
+		break;
+
+		case 'setusers': 
+			$SQL = 	' INSERT INTO users '.
+					' ( ' . implode(',', array_keys($request)) . ' ) '.
+					' VALUES ('.strtolower('"'.implode('","', array_values($request)).'"').')';
+		break;
+		default:
+			echo json_encode(array(
+				'status'	=> 'ko', 
+				'error'		=> 'unknow_request'));		
+			exit();
 		break;
 	}
 
 	echo json_encode(array(
 		'status'	=> 'ok', 
-		'data'		=> requestDB($conf['ACCESS']['DB'] ,$SQL)));
+		'data'		=> requestDB($conf['ACCESS']['DB'] ,$SQL, $action == 'get')));
 /**/
 ?>

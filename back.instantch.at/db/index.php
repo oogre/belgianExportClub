@@ -1,5 +1,5 @@
 <?php 
-function requestDB ($DB, $SQL){
+function requestDB ($DB, $SQL, $return){
 	if(!isset($SQL) || !isset($DB)){
 		throw new Exception("SQL OR DB NEEDED", 1);
 	}
@@ -14,11 +14,18 @@ function requestDB ($DB, $SQL){
 		mysql_select_db($DB['db'], $con);
 		$query = $SQL;
 		$result = mysql_query($query);
-		$array = array();
-		while($array[] = mysql_fetch_assoc($result));
-		mysql_close($con);
-		array_pop($array);
-		return $array;
+		if($return)
+		{
+			$array = array();
+			while($array[] = mysql_fetch_assoc($result));
+			mysql_close($con);
+			array_pop($array);
+			return $array;
+		}
+		else{
+			return true;
+			mysql_close($con);
+		}
 	}/**/
 }
 ?>

@@ -39,23 +39,48 @@
                 app.initialize();
                 AT = new INSTANTCHAT();
                 AT.ready(function(){
-                    alert('bonjour')
+                    
                 });
             });
         </script>
         <title>Hello World</title>
     </head>
-    <body>
+    <body id='instantch_at'>
         <div view='loader' class="container">
             <h1>loader</h1>
         </div>
-
         <div view='signup' class="container">
-            <h1>signup</h1>
+            <form role="form">
+                <div class="form-group">
+                    <label for="email">Email address</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter email">
+                </div>
+                <div class="form-group">
+                    <label for="firstname">Firstname</label>
+                    <input type="text" class="form-control" id="firstname" name="firstname" placeholder="Enter Firstname">
+                </div>
+                <div class="form-group">
+                    <label for="lastname">Lastname</label>
+                    <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Enter Lastname">
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="gender" id="gender_male" value="1" checked>
+                        Male
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="gender" id="gender_female" value="0">
+                        Female
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-default">Submit</button>
+            </form>
         </div>
 
         <div view='research' class="container">
-            <h1>research</h1>
+            <button class="btn btn-primary" type="submit">Recherche</button>
         </div>
 
         <div view='listcompany' class="container">

@@ -1,15 +1,5 @@
 [view]{
 	min-height: 100px;
 	border: solid 1px black;
+
 };
-
-
-.element.style {
-height: 100px;
-font-size: 45px;
-}
-
-#content {
-	width: 960px;
-	text-align:left;
-}

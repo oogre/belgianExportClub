@@ -39,51 +39,45 @@
                 app.initialize();
                 AT = new INSTANTCHAT();
                 AT.ready(function(){
-                    alert('bonjour')
+                    
                 });
             });
         </script>
         <title>Hello World</title>
     </head>
-    <body>
+    <body id='instantch_at'>
         <div view='loader' class="container">
             <h1>loader</h1>
         </div>
-
         <div view='signup' class="container">
             <form role="form">
                 <div class="form-group">
-                    <label for="exampleInputEmail1"> Email address</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+                    <label for="email">Email address</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter email">
                 </div>
                 <div class="form-group">
-                    <label for="exampleInputFirstname">Firstname</label>
-                    <input type="text" class="form-control" id="exampleInputFirstname" placeholder="Enter Firstname">
+                    <label for="firstname">Firstname</label>
+                    <input type="text" class="form-control" id="firstname" name="firstname" placeholder="Enter Firstname">
                 </div>
                 <div class="form-group">
-                    <label for="exampleInputLastname">Lastname</label>
-                    <input type="text" class="form-control" id="exampleInputLastname" placeholder="Enter Lastname">
-                </div>
-
-                <div class="form-group">
-                    <label for="exampleInputLastname"> TAG </label>
-                    <input type="text" class="form-control" id="exampleInputTag" placeholder="Enter three TAG">
+                    <label for="lastname">Lastname</label>
+                    <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Enter Lastname">
                 </div>
 
                 <div class="radio">
-                  <label>
-                    <input type="radio" name="optionsRadios" id="optionsRadios1" value="1" checked>
-                    Male
-                  </label>
+                    <label>
+                        <input type="radio" name="gender" id="gender_male" value="1" checked>
+                        Male
+                    </label>
                 </div>
                 <div class="radio">
-                  <label>
-                    <input type="radio" name="optionsRadios" id="optionsRadios2" value="0">
+                    <label>
+                        <input type="radio" name="gender" id="gender_female" value="0">
                         Female
-                  </label>
+                    </label>
                 </div>
-                  <button type="submit" class="btn btn-default">Submit</button>
-                </form>
+                <button type="submit" class="btn btn-default">Submit</button>
+            </form>
         </div>
 
         <div view='research' class="container">
