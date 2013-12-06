@@ -7,13 +7,13 @@ String.prototype.accentAnnihilator = function(){
 
 window.INSTANTCHAT = function(){
 	var conf = {
-		back : window.debug ? 'http://back.instantch.at' : '10.0.2.1'
+		back : window.debug ? 'http://back.instantch.at' : 'http://10.0.2.1'
 	};
 
-	var _current_view = document.querySelector('[view]');
+
 	document.querySelectorAll('[view]:not(:first-child)').map(function(view){
-		view.style.display = 'none';
-	});
+        view.style.display = 'none';
+    });
 
 	var _loader = {
 		view : document.querySelector('[view=loader]'),
@@ -30,7 +30,6 @@ window.INSTANTCHAT = function(){
 	var listener = {
 		deferred : $.Deferred().resolve(),
 		signup : function(deferred){
-			
 			document.querySelector('[view=signup] form').onsubmit = function(event){
 				_getUserSignup(deferred, event.target);
 				return false;
@@ -43,21 +42,41 @@ window.INSTANTCHAT = function(){
 
 
 
-	var _goto = function(view){
-		if('pending' === listener.deferred.state()){
-			listener.deferred.reject();
+	var _go = {
+		current : document.querySelector('[view]'),
+		last : [],
+		back: function(){
+			if('pending' === listener.deferred.state()){
+				listener.deferred.reject();
+			}
+			var view = _go.last.pop();
+			if(view){
+				listener.deferred = $.Deferred();
+				_go.current.style.display = 'none';
+				_go.current = document.querySelector('[view='+view+']');
+				_go.current.style.display = 'block';
+
+				listener[view] && listener[view](listener.deferred);
+			}
+			return listener.deferred;
+		},
+		to : function(view){
+			if('pending' === listener.deferred.state()){
+				listener.deferred.reject();
+			}
+			listener.deferred = $.Deferred();
+			_go.last.push(_go.current.getAttribute('view'));
+			_go.current.style.display = 'none';
+			_go.current = document.querySelector('[view='+view+']');
+			_go.current.style.display = 'block';
+			listener[view] && listener[view](listener.deferred);
+			return listener.deferred;
 		}
-		listener.deferred = $.Deferred();
-		_current_view.style.display = 'none';
-		_current_view = document.querySelector('[view='+view+']');
-		_current_view.style.display = 'block';
-		alert(view);
-		listener[view] && listener[view](listener.deferred);
-		return listener.deferred.promise();
 	};
 
 	var tool = {
 		xhr : function(url, data){
+			console.log(url);
 			var _request = data;
 			return $.ajax({
 				url: url,
@@ -124,11 +143,7 @@ window.INSTANTCHAT = function(){
 		}
 		else{
 			cordova.require("cordova/plugin/telephonenumber").get(function(result){
-				deferred.resolve({
-					user : {
-						phonenumber : result
-					}
-				});
+				deferred.resolve(result);
 			});
 		}
 		return deferred.promise();
@@ -143,11 +158,7 @@ window.INSTANTCHAT = function(){
 			}
 			geocoder && geocoder.geocode(latLng, function (results, status) {
 				if (status == google.maps.GeocoderStatus.OK){
-					deferred.resolve({
-						user : {
-							address : results[0].formatted_address
-						}
-					});
+					deferred.resolve(results[0].formatted_address);
 				}
 			});
 		};
@@ -164,37 +175,53 @@ window.INSTANTCHAT = function(){
 	};
 
 	var _getUserSignup = function(deferred, form){
+		alert('YO');
 		var request = {};
-		alert('166');
 		for (var i = form.length - 1; i >= 0; i--) {
 			form[i].name && (request[form[i].name] = form[i].type != 'radio' || form[i].checked ? form[i].value : request[form[i].name]);
 		};
-		alert('170');
 		deferred.resolve({
 			user : request
 		});
 	};
 
 	var _getTags = function(deferred){
-		tool.xhr(conf.back+'/get/tags').done(function(data){
-			console.log(data)
+		tool.xhr(conf.back+'/get/tags').done(function(tags){
+			var table = _go.current.querySelector('table tbody');
+			table.querySelectorAll('tr').map(function(elem){
+				table.removeChild(elem);
+			});
+			tags.sort(function(a,b){
+				return a.name.localeCompare(b.name);
+			}).map(function(tag){
+				var tag = $('<tr><td tag_id="'+tag.tag_id+'">'+tag.name+'</td></tr>')[0];
+				table.appendChild(tag);
+				tag.onclick = function(event){
+					var t = event.target;
+					t.parentNode.classList.toggle('selected');
+				}
+				var tag = $('<tr><td tag_id="'+tag.tag_id+'">'+tag.name+'</td></tr>')[0];
+				table.appendChild(tag);
+				tag.onclick = function(event){
+					var t = event.target;
+					t.parentNode.classList.toggle('selected');
+				}
+			});
 		});
-	}
-
+	};
 
 	var _ready = $.when(
 			_phonenumber().done(function(phonenumber){
 				tool.xhr(conf.back+'/get/users', {phonenumber : phonenumber} )
 				.done(function(data){
-					_goto('listtag');
+					_go.to('listtag');
 				})
 				.fail(function(){
-					_goto('signup').done(function(user){
-						alert(185);
+					_go.to('signup').done(function(user){
+						alert('USER');
 						permanentStorage.addItem(user);
-						alert(187);
 						tool.xhr(conf.back+'/set/users', permanentStorage.getItem().user).done(function(){
-							_goto('listtag');
+							_go.to('listtag');
 						}).fail(function(data){
 							alert(data)
 						})
@@ -212,6 +239,7 @@ window.INSTANTCHAT = function(){
 				}
 			});
 	});
+		
 
 	return {
 		getCurentUser : function(){
@@ -221,9 +249,7 @@ window.INSTANTCHAT = function(){
 			_ready.done(fnc);
 			return this;
 		},
-		goto : function(view){
-			return _goto(view);
-		},
+		go : _go,
 		conf : conf,
 		permanentStorage : permanentStorage
 	}

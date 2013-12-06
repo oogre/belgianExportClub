@@ -7,6 +7,10 @@
   src: url('../fonts/CosmicSansNeueMonoBold.otf');
 }
 
+body#instantch_at{
+	font-size: 60px;
+}
+
 #instantch_at{
 	background: #fff;
 	font-family: 'CosmicSansNeueMono';
@@ -14,17 +18,35 @@
 }
 #instantch_at header{
 	background: #008eea;
-	border-bottom: solid 1px #8eea00
+	border-bottom: solid 3px #8eea00
 }
 #instantch_at header.navbar{
-	min-height: 75px;
+	min-height: 100px;
 }
+
+#instantch_at [view=listtag] .navbar-fixed-top{
+	top: 100px;
+	min-height: 80px;
+	background-color: #b7c5ca;
+}
+
 #instantch_at header.navbar a.navbar-brand{
 	color: #fff;
 	font-size: 50px;
 	padding : 25px 5px;
 	font-family: 'CosmicSansNeueMonoBold';
 }
+#instantch_at header+.container{
+	margin-top: 180px;
+}
+
+#instantch_at table td{
+	padding: 20px 0 20px 120px;
+}
+#instantch_at table .selected{
+	background: rgba(204,255,102 , 0.3)
+}
+
 #instantch_at input{
 	height: 70px;
 
@@ -60,4 +82,9 @@
 	width: auto;
 	height: 76px;
     
+}
+
+#instantch_at .table-striped > tbody > tr:nth-child(odd) > td, 
+#instantch_at .table-striped > tbody > tr:nth-child(odd) > th{
+	background-color: rgba(183,197,202 , 0.2)
 }

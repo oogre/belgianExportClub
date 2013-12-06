@@ -7,13 +7,13 @@ String.prototype.accentAnnihilator = function(){
 
 window.INSTANTCHAT = function(){
 	var conf = {
-		back : window.debug ? 'http://back.instantch.at' : '10.0.2.1'
+		back : window.debug ? 'http://back.instantch.at' : 'http://10.0.2.1'
 	};
 
 
 	document.querySelectorAll('[view]:not(:first-child)').map(function(view){
-		view.style.display = 'none';
-	});
+        view.style.display = 'none';
+    });
 
 	var _loader = {
 		view : document.querySelector('[view=loader]'),
@@ -47,22 +47,31 @@ window.INSTANTCHAT = function(){
 		current : document.querySelector('[view]'),
 		last : [],
 		back: function(){
-			_go.to(_go.last.pop(), false);
+			if('pending' === listener.deferred.state()){
+				listener.deferred.reject();
+			}
+			var view = _go.last.pop();
+			if(view){
+				listener.deferred = $.Deferred();
+				_go.current.style.display = 'none';
+				_go.current = document.querySelector('[view='+view+']');
+				_go.current.style.display = 'block';
+
+				listener[view] && listener[view](listener.deferred);
+			}
+			return listener.deferred;
 		},
-		to : function(view, save){
-			save = save || true;
+		to : function(view){
 			if('pending' === listener.deferred.state()){
 				listener.deferred.reject();
 			}
 			listener.deferred = $.Deferred();
-			save && _go.last.push(_go.current.getAttribute('view'));
-
+			_go.last.push(_go.current.getAttribute('view'));
 			_go.current.style.display = 'none';
 			_go.current = document.querySelector('[view='+view+']');
 			_go.current.style.display = 'block';
-
 			listener[view] && listener[view](listener.deferred);
-			return listener.deferred.promise();
+			return listener.deferred;
 		}
 	};
 
@@ -134,11 +143,7 @@ window.INSTANTCHAT = function(){
 		}
 		else{
 			cordova.require("cordova/plugin/telephonenumber").get(function(result){
-				deferred.resolve({
-					user : {
-						phonenumber : result
-					}
-				});
+				deferred.resolve(result);
 			});
 		}
 		return deferred.promise();
@@ -153,11 +158,7 @@ window.INSTANTCHAT = function(){
 			}
 			geocoder && geocoder.geocode(latLng, function (results, status) {
 				if (status == google.maps.GeocoderStatus.OK){
-					deferred.resolve({
-						user : {
-							address : results[0].formatted_address
-						}
-					});
+					deferred.resolve(results[0].formatted_address);
 				}
 			});
 		};
@@ -184,11 +185,23 @@ window.INSTANTCHAT = function(){
 	};
 
 	var _getTags = function(deferred){
-		tool.xhr(conf.back+'/get/tags').done(function(data){
-			console.log(data)
+		tool.xhr(conf.back+'/get/tags').done(function(tags){
+			var table = _go.current.querySelector('table tbody');
+			table.querySelectorAll('tr').map(function(elem){
+				table.removeChild(elem);
+			});
+			tags.sort(function(a,b){
+				return a.name.localeCompare(b.name);
+			}).map(function(tag){
+				var tag = $('<tr><td tag_id="'+tag.tag_id+'">'+tag.name+'</td></tr>')[0];
+				table.appendChild(tag);
+				tag.onclick = function(event){
+					var t = event.target;
+					t.parentNode.classList.toggle('selected');
+				}
+			});
 		});
-	}
-
+	};
 
 	var _ready = $.when(
 			_phonenumber().done(function(phonenumber){
@@ -218,6 +231,7 @@ window.INSTANTCHAT = function(){
 				}
 			});
 	});
+		
 
 	return {
 		getCurentUser : function(){
