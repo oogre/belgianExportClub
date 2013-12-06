@@ -163,9 +163,11 @@ window.INSTANTCHAT = function(){
 
 	var _getUserSignup = function(deferred, form){
 		var request = {};
+		alert('166');
 		for (var i = form.length - 1; i >= 0; i--) {
 			form[i].name && (request[form[i].name] = form[i].type != 'radio' || form[i].checked ? form[i].value : request[form[i].name]);
 		};
+		alert('170');
 		deferred.resolve({
 			user : request
 		});
@@ -183,6 +185,8 @@ window.INSTANTCHAT = function(){
 						permanentStorage.addItem(user);
 						tool.xhr(conf.back+'/set/users', permanentStorage.getItem().user).done(function(){
 							_goto('research');
+						}).fail(function(data){
+							alert(data)
 						})
 					});
 				})

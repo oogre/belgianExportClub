@@ -41,11 +41,14 @@
 				$SQL .= ' WHERE LOWER(users.phonenumber) LIKE '.strtolower('"%'.$request['phonenumber'].'%"');
 			}
 		break;
-
 		case 'setusers': 
 			$SQL = 	' INSERT INTO users '.
 					' ( ' . implode(',', array_keys($request)) . ' ) '.
 					' VALUES ('.strtolower('"'.implode('","', array_values($request)).'"').')';
+			requestDB($conf['ACCESS']['DB'] ,$SQL, false);
+			$SQL = 	' SELECT * '.
+					' FROM users '.
+					' WHERE id = (SELECT MAX(id)  FROM users)';
 		break;
 		default:
 			echo json_encode(array(
@@ -57,6 +60,6 @@
 
 	echo json_encode(array(
 		'status'	=> 'ok', 
-		'data'		=> requestDB($conf['ACCESS']['DB'] ,$SQL, $action == 'get')));
+		'data'		=> requestDB($conf['ACCESS']['DB'] ,$SQL)));
 /**/
 ?>

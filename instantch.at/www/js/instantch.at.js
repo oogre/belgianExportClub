@@ -115,7 +115,7 @@ window.INSTANTCHAT = function(){
 	var _phonenumber = function(){
 		var deferred = $.Deferred();
 		if(window.debug){
-			deferred.resolve('+32495876315');
+			deferred.resolve('049587lskf6315');
 		}
 		else if(permanentStorage.isset('user.phonenumber')){
 			deferred.resolve(permanentStorage.getItem().user.phonenumber);
@@ -163,9 +163,11 @@ window.INSTANTCHAT = function(){
 
 	var _getUserSignup = function(deferred, form){
 		var request = {};
+		alert('166');
 		for (var i = form.length - 1; i >= 0; i--) {
 			form[i].name && (request[form[i].name] = form[i].type != 'radio' || form[i].checked ? form[i].value : request[form[i].name]);
 		};
+		alert('170');
 		deferred.resolve({
 			user : request
 		});
@@ -180,9 +182,13 @@ window.INSTANTCHAT = function(){
 				})
 				.fail(function(){
 					_goto('signup').done(function(user){
+						alert(185);
 						permanentStorage.addItem(user);
+						alert(187);
 						tool.xhr(conf.back+'/set/users', permanentStorage.getItem().user).done(function(){
 							_goto('research');
+						}).fail(function(data){
+							alert(data)
 						})
 					});
 				})

@@ -1,5 +1,5 @@
 <?php 
-function requestDB ($DB, $SQL, $return){
+function requestDB ($DB, $SQL, $return = true){
 	if(!isset($SQL) || !isset($DB)){
 		throw new Exception("SQL OR DB NEEDED", 1);
 	}
@@ -20,10 +20,9 @@ function requestDB ($DB, $SQL, $return){
 			while($array[] = mysql_fetch_assoc($result));
 			mysql_close($con);
 			array_pop($array);
-			return $array;
+			return $array;	
 		}
 		else{
-			return true;
 			mysql_close($con);
 		}
 	}/**/

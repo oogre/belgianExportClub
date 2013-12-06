@@ -1,5 +1,7 @@
 [view]{
 	min-height: 100px;
 	border: solid 1px black;
-
 };
+#instantch_at input{
+	height: 70px;
+}
