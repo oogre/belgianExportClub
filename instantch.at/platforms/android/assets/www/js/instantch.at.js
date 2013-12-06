@@ -30,12 +30,14 @@ window.INSTANTCHAT = function(){
 	var listener = {
 		deferred : $.Deferred().resolve(),
 		signup : function(deferred){
-			alert('listener.signup');
+			
 			document.querySelector('[view=signup] form').onsubmit = function(event){
-				alert('submit');
 				_getUserSignup(deferred, event.target);
 				return false;
 			};
+		},
+		listtag : function(deferred){
+			_getTags(deferred);
 		}
 	}
 
@@ -115,7 +117,7 @@ window.INSTANTCHAT = function(){
 	var _phonenumber = function(){
 		var deferred = $.Deferred();
 		if(window.debug){
-			deferred.resolve('+32495876315');
+			deferred.resolve('049587lskf6315');
 		}
 		else if(permanentStorage.isset('user.phonenumber')){
 			deferred.resolve(permanentStorage.getItem().user.phonenumber);
@@ -171,6 +173,12 @@ window.INSTANTCHAT = function(){
 		deferred.resolve({
 			user : request
 		});
+	};
+
+	var _getTags = function(deferred){
+		tool.xhr(conf.back+'/get/tags').done(function(data){
+			console.log(data)
+		});
 	}
 
 
@@ -178,13 +186,15 @@ window.INSTANTCHAT = function(){
 			_phonenumber().done(function(phonenumber){
 				tool.xhr(conf.back+'/get/users', {phonenumber : phonenumber} )
 				.done(function(data){
-					_goto('research');
+					_goto('listtag');
 				})
 				.fail(function(){
 					_goto('signup').done(function(user){
+						alert(185);
 						permanentStorage.addItem(user);
+						alert(187);
 						tool.xhr(conf.back+'/set/users', permanentStorage.getItem().user).done(function(){
-							_goto('research');
+							_goto('listtag');
 						}).fail(function(data){
 							alert(data)
 						})

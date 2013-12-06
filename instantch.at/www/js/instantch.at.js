@@ -10,7 +10,7 @@ window.INSTANTCHAT = function(){
 		back : window.debug ? 'http://back.instantch.at' : '10.0.2.1'
 	};
 
-	var _current_view = document.querySelector('[view]');
+
 	document.querySelectorAll('[view]:not(:first-child)').map(function(view){
 		view.style.display = 'none';
 	});
@@ -30,28 +30,40 @@ window.INSTANTCHAT = function(){
 	var listener = {
 		deferred : $.Deferred().resolve(),
 		signup : function(deferred){
-			alert('listener.signup');
+			
 			document.querySelector('[view=signup] form').onsubmit = function(event){
-				alert('submit');
 				_getUserSignup(deferred, event.target);
 				return false;
 			};
+		},
+		listtag : function(deferred){
+			_getTags(deferred);
 		}
 	}
 
 
 
-	var _goto = function(view){
-		if('pending' === listener.deferred.state()){
-			listener.deferred.reject();
+	var _go = {
+		current : document.querySelector('[view]'),
+		last : [],
+		back: function(){
+			_go.to(_go.last.pop(), false);
+		},
+		to : function(view, save){
+			save = save || true;
+			if('pending' === listener.deferred.state()){
+				listener.deferred.reject();
+			}
+			listener.deferred = $.Deferred();
+			save && _go.last.push(_go.current.getAttribute('view'));
+
+			_go.current.style.display = 'none';
+			_go.current = document.querySelector('[view='+view+']');
+			_go.current.style.display = 'block';
+
+			listener[view] && listener[view](listener.deferred);
+			return listener.deferred.promise();
 		}
-		listener.deferred = $.Deferred();
-		_current_view.style.display = 'none';
-		_current_view = document.querySelector('[view='+view+']');
-		_current_view.style.display = 'block';
-		alert(view);
-		listener[view] && listener[view](listener.deferred);
-		return listener.deferred.promise();
 	};
 
 	var tool = {
@@ -163,13 +175,17 @@ window.INSTANTCHAT = function(){
 
 	var _getUserSignup = function(deferred, form){
 		var request = {};
-		alert('166');
 		for (var i = form.length - 1; i >= 0; i--) {
 			form[i].name && (request[form[i].name] = form[i].type != 'radio' || form[i].checked ? form[i].value : request[form[i].name]);
 		};
-		alert('170');
 		deferred.resolve({
 			user : request
+		});
+	};
+
+	var _getTags = function(deferred){
+		tool.xhr(conf.back+'/get/tags').done(function(data){
+			console.log(data)
 		});
 	}
 
@@ -178,15 +194,13 @@ window.INSTANTCHAT = function(){
 			_phonenumber().done(function(phonenumber){
 				tool.xhr(conf.back+'/get/users', {phonenumber : phonenumber} )
 				.done(function(data){
-					_goto('research');
+					_go.to('listtag');
 				})
 				.fail(function(){
-					_goto('signup').done(function(user){
-						alert(185);
+					_go.to('signup').done(function(user){
 						permanentStorage.addItem(user);
-						alert(187);
 						tool.xhr(conf.back+'/set/users', permanentStorage.getItem().user).done(function(){
-							_goto('research');
+							_go.to('listtag');
 						}).fail(function(data){
 							alert(data)
 						})
@@ -213,9 +227,7 @@ window.INSTANTCHAT = function(){
 			_ready.done(fnc);
 			return this;
 		},
-		goto : function(view){
-			return _goto(view);
-		},
+		go : _go,
 		conf : conf,
 		permanentStorage : permanentStorage
 	}

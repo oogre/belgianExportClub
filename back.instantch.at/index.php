@@ -41,6 +41,15 @@
 				$SQL .= ' WHERE LOWER(users.phonenumber) LIKE '.strtolower('"%'.$request['phonenumber'].'%"');
 			}
 		break;
+
+		case 'gettag': 
+		case 'gettags': 
+			$SQL = 	' SELECT * '.
+					' FROM tags '.
+					' LEFT JOIN tag_company ON tag_company.tag_id = tags.id '.
+					' WHERE tags.id IS NOT NULL '.
+					' AND tag_company.company_id IS NOT NULL ';
+		break;
 		case 'setusers': 
 			$SQL = 	' INSERT INTO users '.
 					' ( ' . implode(',', array_keys($request)) . ' ) '.

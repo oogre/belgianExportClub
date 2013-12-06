@@ -28,6 +28,10 @@
 /Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/assets/www/css/font-awesome.min.css \
 /Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/assets/www/css/index.css \
 /Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/assets/www/css/instantch.at.css \
+/Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/assets/www/fonts/CosmicSansNeueMono.otf \
+/Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/assets/www/fonts/CosmicSansNeueMono.ttf \
+/Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/assets/www/fonts/CosmicSansNeueMonoBold.otf \
+/Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/assets/www/fonts/CosmicSansNeueMonoBold.ttf \
 /Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/assets/www/fonts/fontawesome-webfont.eot \
 /Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/assets/www/fonts/fontawesome-webfont.svg \
 /Users/vincentevrard/OGRE/Hackathlon/git/instantch.at/platforms/android/assets/www/fonts/fontawesome-webfont.ttf \
