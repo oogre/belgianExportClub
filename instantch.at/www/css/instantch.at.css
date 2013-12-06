@@ -24,10 +24,11 @@ body#instantch_at{
 	min-height: 100px;
 }
 
-#instantch_at [view=listtag] .navbar-fixed-top{
+#instantch_at [view] .navbar-fixed-top{
 	top: 100px;
-	min-height: 80px;
-	background-color: #b7c5ca;
+	height: 70px;
+	background-color: #fff;
+	margin: 0 16px;
 }
 
 #instantch_at header.navbar a.navbar-brand{
@@ -37,14 +38,32 @@ body#instantch_at{
 	font-family: 'CosmicSansNeueMonoBold';
 }
 #instantch_at header+.container{
-	margin-top: 180px;
+	margin-top: 168px;	
 }
 
 #instantch_at table td{
 	padding: 20px 0 20px 120px;
 }
+
+#instantch_at table .btn {
+	display : none;
+}
+#instantch_at table .selected:not(.not) .btn-success {
+	display : block;
+}
+#instantch_at table .not.selected .btn-warning {
+	display : block;
+}
+
+
 #instantch_at table .selected{
 	background: rgba(204,255,102 , 0.3)
+}
+
+
+
+#instantch_at table .not.selected{
+	background: rgba(255, 102, 102 , 0.3)
 }
 
 #instantch_at input{
@@ -59,12 +78,6 @@ body#instantch_at{
     margin-left: 0px;
 }
 
-#instantch_at .btn{
-	
-	font-size: 40px;
-    margin-right: 0px;
-    margin-left: 0px;
-}
 #instantch_at .panel-footer{
 	width:100%;
 	height:90px;
@@ -73,14 +86,9 @@ body#instantch_at{
 	left:0;
 	background:;
 	z-index: 11;
-
 }
-
-#instantch_at .box{
-	
-	width: auto;
-	height: 76px;
-    
+#instantch_at .footer{
+	font-size: 40px;
 }
 #instantch_at .h1{
 	

@@ -42,13 +42,33 @@
 			}
 		break;
 
+		case 'setusertagdisinterest':
+			$SQL = 	' INSERT INTO user_tag_disinterest '.
+					' ( ' . implode(',', array_keys($request)) . ' ) '.
+					' VALUES ('.strtolower('"'.implode('","', array_values($request)).'"').')';
+			requestDB($conf['ACCESS']['DB'] ,$SQL, false);
+		case 'getusertagdisinterest':
+			$SQL = 	' SELECT * '.
+					' FROM user_tag_disinterest '.
+					' WHERE user_id = ' . $request['user_id'];
+		break;
 		case 'gettag': 
 		case 'gettags': 
-			$SQL = 	' SELECT * '.
-					' FROM tags '.
-					' LEFT JOIN tag_company ON tag_company.tag_id = tags.id '.
-					' WHERE tags.id IS NOT NULL '.
-					' AND tag_company.company_id IS NOT NULL ';
+					if(!empty($request['user_id'])){
+						$SQL = 	' SELECT DISTINCT(tags.id) AS tag_id, tags.name tag_name  '.
+								' FROM tags '.
+								' LEFT JOIN tag_company ON tag_company.tag_id = tags.id '.
+								' LEFT JOIN user_tag_disinterest ON user_tag_disinterest.tag_id = tags.id AND user_tag_disinterest.user_id = '.$request['user_id'].
+								' WHERE tags.id IS NOT NULL '.
+								' AND user_tag_disinterest.tag_id IS NULL '.
+								' AND tag_company.company_id IS NOT NULL';
+					}else{
+						$SQL = 	' SELECT DISTINCT(tags.id) AS tag_id, tags.name tag_name  '.
+								' FROM tags '.
+								' LEFT JOIN tag_company ON tag_company.tag_id = tags.id '.
+								' WHERE tags.id IS NOT NULL '.
+								' AND tag_company.company_id IS NOT NULL ';
+					}
 		break;
 		case 'setusers': 
 			$SQL = 	' INSERT INTO users '.
@@ -62,7 +82,7 @@
 		default:
 			echo json_encode(array(
 				'status'	=> 'ko', 
-				'error'		=> 'unknow_request'));		
+				'data'		=> false));		
 			exit();
 		break;
 	}

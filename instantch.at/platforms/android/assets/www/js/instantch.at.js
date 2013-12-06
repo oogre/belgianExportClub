@@ -1,5 +1,5 @@
 NodeList.prototype.map = function(fnc){
-	Array.prototype.slice.call(this).map(fnc);
+	return Array.prototype.slice.call(this).map(fnc);
 }
 String.prototype.accentAnnihilator = function(){
 	return this.replace(/é|è|ê|ë/g, 'e').replace(/'ï|ì|î/g, 'i').replace(/'ù|û|ü/g, 'u').replace(/'ò|ö|ô/g, 'o').replace(/'œ/g, 'oe');
@@ -7,7 +7,9 @@ String.prototype.accentAnnihilator = function(){
 
 window.INSTANTCHAT = function(){
 	var conf = {
-		back : window.debug ? 'http://back.instantch.at' : 'http://10.0.2.1'
+		back : window.debug ? 'http://back.instantch.at' : 'http://10.0.2.1',
+		default_phonenumber : '049kj5876315',
+		default_address : 'rue Mandevile 23, 4000 Liège Belgique',
 	};
 
 
@@ -30,6 +32,7 @@ window.INSTANTCHAT = function(){
 	var listener = {
 		deferred : $.Deferred().resolve(),
 		signup : function(deferred){
+			
 			document.querySelector('[view=signup] form').onsubmit = function(event){
 				_getUserSignup(deferred, event.target);
 				return false;
@@ -40,14 +43,12 @@ window.INSTANTCHAT = function(){
 		}
 	}
 
-
-
 	var _go = {
 		current : document.querySelector('[view]'),
 		last : [],
 		back: function(){
 			if('pending' === listener.deferred.state()){
-				listener.deferred.reject();
+				listener.deferred.reject(_go.current);
 			}
 			var view = _go.last.pop();
 			if(view){
@@ -62,7 +63,7 @@ window.INSTANTCHAT = function(){
 		},
 		to : function(view){
 			if('pending' === listener.deferred.state()){
-				listener.deferred.reject();
+				listener.deferred.reject(_go.current);
 			}
 			listener.deferred = $.Deferred();
 			_go.last.push(_go.current.getAttribute('view'));
@@ -76,7 +77,6 @@ window.INSTANTCHAT = function(){
 
 	var tool = {
 		xhr : function(url, data){
-			console.log(url);
 			var _request = data;
 			return $.ajax({
 				url: url,
@@ -136,7 +136,7 @@ window.INSTANTCHAT = function(){
 	var _phonenumber = function(){
 		var deferred = $.Deferred();
 		if(window.debug){
-			deferred.resolve('049587lskf6315');
+			deferred.resolve(conf.default_phonenumber);
 		}
 		else if(permanentStorage.isset('user.phonenumber')){
 			deferred.resolve(permanentStorage.getItem().user.phonenumber);
@@ -163,7 +163,7 @@ window.INSTANTCHAT = function(){
 			});
 		};
 		if(window.debug){
-			deferred.resolve('rue Mandevile 23, 4000 Liège Belgique');
+			deferred.resolve(conf.default_address);
 		}
 		else if(permanentStorage.isset('user.address')){
 			deferred.resolve(permanentStorage.getItem().user.address);
@@ -175,7 +175,6 @@ window.INSTANTCHAT = function(){
 	};
 
 	var _getUserSignup = function(deferred, form){
-		alert('YO');
 		var request = {};
 		for (var i = form.length - 1; i >= 0; i--) {
 			form[i].name && (request[form[i].name] = form[i].type != 'radio' || form[i].checked ? form[i].value : request[form[i].name]);
@@ -185,27 +184,78 @@ window.INSTANTCHAT = function(){
 		});
 	};
 
+	var _setUserTagDisinterest = function(company){
+		tool.xhr(conf.back+'/set/usertagdisinterest', {
+			tag_id : company.querySelector('[tag_id]').getAttribute('tag_id'),
+			user_id : permanentStorage.getItem().user.id 
+		});
+	};
+
+	var _setUserTagInterest = function(tag_ids){
+		console.log(tag_ids);
+	};
+
 	var _getTags = function(deferred){
-		tool.xhr(conf.back+'/get/tags').done(function(tags){
+		var selectedTag = [];
+		tool.xhr(conf.back+'/get/tags', {
+			user_id : permanentStorage.getItem().user.id 
+		}).done(function(tags){
 			var table = _go.current.querySelector('table tbody');
 			table.querySelectorAll('tr').map(function(elem){
 				table.removeChild(elem);
 			});
+
+
 			tags.sort(function(a,b){
-				return a.name.localeCompare(b.name);
+				return a.tag_name.localeCompare(b.tag_name);
 			}).map(function(tag){
-				var tag = $('<tr><td tag_id="'+tag.tag_id+'">'+tag.name+'</td></tr>')[0];
+				var tag = $('<tr><td tag_id="'+tag.tag_id+'">'+tag.tag_name+'</td><td><button type="button" class="btn btn-success btn-lg">Select</button><button type="button" class="btn btn-warning btn-lg">Delete</button></td></tr>')[0];
 				table.appendChild(tag);
+
+				tag.querySelector('.btn-success').onclick = function(event){
+					var company = event.target.parentNode.parentNode;
+					var interest = [];
+					interest.push(company.querySelector('[tag_id]').getAttribute('tag_id'));
+					table.querySelectorAll('.selected:not(.not) [tag_id]').map(function(tag){
+						interest.push(tag.getAttribute('tag_id'));
+					});
+					_setUserTagInterest(interest);
+					deferred.resolve(company)
+					return false;
+				};
+
+				tag.querySelector('.btn-warning').onclick = function(event){
+					var company = event.target.parentNode.parentNode;
+					_setUserTagDisinterest(company);
+					table.removeChild(company);
+					return false;
+				};
 				tag.onclick = function(event){
 					var t = event.target;
-					t.parentNode.classList.toggle('selected');
+					if(t.parentNode.classList.contains('not') && t.parentNode.classList.contains('selected')){
+						t.parentNode.classList.remove('not');
+						t.parentNode.classList.remove('selected');
+					}
+					else if (t.parentNode.classList.contains('selected')){
+						t.parentNode.classList.add('not');
+					}
+					else{
+						t.parentNode.classList.add('selected');
+					}
 				}
-				var tag = $('<tr><td tag_id="'+tag.tag_id+'">'+tag.name+'</td></tr>')[0];
-				table.appendChild(tag);
-				tag.onclick = function(event){
-					var t = event.target;
-					t.parentNode.classList.toggle('selected');
-				}
+			});
+
+			deferred.fail(function(view){
+				var selected = view.querySelectorAll('table tbody .selected:not(.not) [tag_id]').map(function(tag){
+					console.log(tag);
+					return tag.getAttribute('tag_id');
+				});
+				var disselected = view.querySelectorAll('table tbody .not.selected [tag_id]').map(function(tag){
+					console.log(tag);
+					return tag.getAttribute('tag_id');
+				});;
+				console.log(selected);
+				console.log(disselected);
 			});
 		});
 	};
@@ -214,14 +264,20 @@ window.INSTANTCHAT = function(){
 			_phonenumber().done(function(phonenumber){
 				tool.xhr(conf.back+'/get/users', {phonenumber : phonenumber} )
 				.done(function(data){
-					_go.to('listtag');
+					permanentStorage.addItem({
+						user : data[0]
+					});
+					_go.to('listtag').done(function(){
+						_go.to('listcompany');
+					});
 				})
 				.fail(function(){
 					_go.to('signup').done(function(user){
-						alert('USER');
 						permanentStorage.addItem(user);
 						tool.xhr(conf.back+'/set/users', permanentStorage.getItem().user).done(function(){
-							_go.to('listtag');
+							_go.to('listtag').done(function(){
+								_go.to('listcompany')
+							});
 						}).fail(function(data){
 							alert(data)
 						})
