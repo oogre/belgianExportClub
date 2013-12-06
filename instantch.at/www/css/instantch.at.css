@@ -29,3 +29,35 @@
 	height: 70px;
 
 }
+
+#instantch_at .row{
+
+	font-size: 30px;
+    margin-right: 0px;
+    margin-left: 0px;
+}
+
+#instantch_at .btn{
+	
+	font-size: 40px;
+    margin-right: 0px;
+    margin-left: 0px;
+}
+#instantch_at .footer{
+	
+	font-size: 40px;
+    
+}
+
+#instantch_at .box{
+	
+	width: auto;
+	height: 76px;
+    
+}
+#instantch_at .h1{
+	
+	width: auto;
+	height: 76px;
+    
+}
