@@ -220,13 +220,7 @@ window.INSTANTCHAT = function(){
 					table.querySelectorAll('.selected [company_id]').map(function(company){
 						interest.push(company.getAttribute('company_id'));
 					});
-					_setUserTagInterest(interest);
-
-					permanentStorage.addItem({
-						company : {
-							interest : interest,
-						}
-					});
+					
 				};
 				company.onclick = function(event){
 					event.target.parentNode.classList.toggle('selected')
